@@ -1,0 +1,23 @@
+<div class="container">
+    <ul>
+        {{#each burgers}}
+        {{#unless devoured}}
+        {{> burgers devoured=true}}
+        {{/unless}}
+        {{/each}}
+    </ul>
+
+     <ul>
+        {{#each burgers}}
+        {{#if devoured}}
+        {{> burgers devoured=false}}
+        {{/if}}
+        {{/each}}
+    </ul>
+
+      <form>
+        <h2 class='display-4'>NEW BURGER!</h2>
+        <input class="form-control" id='new-burger' type="text" placeholder="New Burger!">
+        <button type="submit" class="btn btn-lg btn-primary" id='burger-submit'>ADD</button>
+    </form>
+</div>
