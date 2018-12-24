@@ -1,37 +1,30 @@
 var connection = require("./connection.js");
+var mysql = require('mysql');
 
-// Object Relational Mapper (ORM)
-
-// The ?? signs are for swapping out table or column names
-// The ? signs are for swapping out other values
-// These help avoid SQL injection
-// https://en.wikipedia.org/wiki/SQL_injection
 var orm = {
-  selectWhere: function(tableInput, colToSearch, valOfCol) {
-    var queryString = "SELECT * FROM ?? WHERE ?? = ?";
-    connection.query(queryString, [tableInput, colToSearch, valOfCol], function(err, result) {
+  selectAll: function(table, cb) {
+    var queryString = "SELECT * FROM";
+    connection.query(queryString, [table], function(err, result) {
       if (err) throw err;
-      console.log(result);
+      cb(result);
     });
   },
-  selectAndOrder: function(whatToSelect, table, orderCol) {
-    var queryString = "SELECT ?? FROM ?? ORDER BY ?? DESC";
-    console.log(queryString);
-    connection.query(queryString, [whatToSelect, table, orderCol], function(err, result) {
+  insertOne: function(table, colOne, colTwo, valOne, valTwo, cb) {
+    var queryString = "INSERT INTO ?? (??,??) VALUES (?,?)";
+    var inserts = [table, colOne, colTwo, valOne, valTwo, cb];
+    var string = mysql.format(queryString, inserts);
+    connection.query(string, function(err, result) {
       if (err) throw err;
-      console.log(result);
+      cb(result);
     });
   },
-  findWhoHasMost: function(tableOneCol, tableTwoForeignKey, tableOne, tableTwo) {
-    var queryString =
-      "SELECT ??, COUNT(??) AS count FROM ?? LEFT JOIN ?? ON ??.??= ??.id GROUP BY ?? ORDER BY count DESC LIMIT 1";
+  updateOne: function(table, colOne, colTwo, valOne, valTwo, cb) {
+    var queryString = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
 
-    connection.query(
-      queryString,
-      [tableOneCol, tableOneCol, tableOne, tableTwo, tableTwo, tableTwoForeignKey, tableOne, tableOneCol],
+    connection.query( queryString,[table, colOne, colTwo, valOne, valTwo, cb],
       function(err, result) {
         if (err) throw err;
-        console.log(result);
+        cb(result);
       }
     );
   }
